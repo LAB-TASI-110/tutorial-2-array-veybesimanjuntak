@@ -1,26 +1,22 @@
-#include <stdio.h> // Untuk fungsi input/output seperti scanf dan printf
-#include <stdlib.h> // Untuk fungsi dynamic memory allocation seperti malloc dan free
+#include <stdio.h>  // Untuk fungsi input/output
+#include <stdlib.h> // Untuk malloc dan free
+#include <float.h>  // Untuk FLT_MAX (nilai float terbesar)
 
 int main() {
-    int n; // Variabel untuk menyimpan jumlah bilangan yang akan diinput
-    
+    int n; 
     scanf("%d", &n); 
     
     int *numbers = (int *)malloc(n * sizeof(int));
-    
     if (numbers == NULL) {
         return 1; 
     }
-
-    int min_val; 
-    int max_val; 
 
     for (int i = 0; i < n; i++) {
         scanf("%d", &numbers[i]);
     }
 
-    min_val = numbers[0];
-    max_val = numbers[0];
+    int min_val = numbers[0]; 
+    int max_val = numbers[0]; 
 
     for (int i = 1; i < n; i++) {
         if (numbers[i] < min_val) {
@@ -31,19 +27,22 @@ int main() {
         }
     }
 
-    // Mencetak nilai terkecil dan terbesar
     printf("%d\n", min_val);
     printf("%d\n", max_val);
 
-    // Menghitung rata-rata dari dua elemen pertama
-    // Pastikan n minimal 2 untuk menghindari akses out-of-bounds
-    // Asumsi dari problem statement dan contoh, n akan selalu cukup.
-    if (n >= 2) {
-        float avg_first_two = (float)(numbers[0] + numbers[1]) / 2.0;
-        printf("%.2f\n", avg_first_two); // Mencetak rata-rata dengan 2 digit presisi
-    }
+    float min_avg_consecutive = FLT_MAX; // Inisialisasi dengan nilai float terbesar
 
-    free(numbers);
+    // Hanya mencari rata-rata jika ada setidaknya satu pasangan (n >= 2)
+    if (n >= 2) { 
+        for (int i = 0; i < n - 1; i++) { // Loop sampai elemen ke-n-2 untuk mendapatkan pasangan terakhir
+            float current_avg = (float)(numbers[i] + numbers[i+1]) / 2.0;
+            if (current_avg < min_avg_consecutive) {
+                min_avg_consecutive = current_avg;
+            }
+        }
+        printf("%.2f\n", min_avg_consecutive);
+    }
     
+    free(numbers);
     return 0; 
 }
